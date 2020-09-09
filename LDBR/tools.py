@@ -1,6 +1,5 @@
 #coding=utf-8
-# @Time : 20-1-14 下午10:02 
-# @Author : Morris 
+
 
 import numpy as np
 from sklearn import preprocessing
@@ -11,11 +10,7 @@ import random
 from six import iteritems
 import line_profiler
 def meanstd_normalization_tensor(tensor): #numpy fucntion
-    '''
-    每一个时间片,所有的node,在同一个feature上单独归一化.时间片之间不归一化.
-    :param tensor:  Features vector with size [n_node, T, feature_dimension]
-    :return: normalized feature vector with shape [n_node, n_steps, n_dim]
-    '''
+
     n_node, n_steps, n_dim = tensor.shape
     tensor_reshape = preprocessing.scale(np.reshape(tensor, [n_node, n_steps * n_dim]), axis=1)
     tensor_norm = np.reshape(tensor_reshape, [n_node, n_steps, n_dim])
@@ -24,10 +19,7 @@ def meanstd_normalization_tensor(tensor): #numpy fucntion
 
 
 def eval(y_true, y_pred):
-    # both size: 6400*num_classes
 
-    # ACC
-    # correct_pred = np.equal(torch.argmax(y_pred, 1), torch.argmax(y_true, 1))
     res_pred = torch.argmax(y_pred, 1)
     res_real = torch.argmax(y_true, 1)
     correct_pred = res_pred.eq(res_real).float()
@@ -72,7 +64,7 @@ def eval_po(y_true, y_pred):
 
     return accuracy
 
-def load_link_prediction_task_fast(graph, t_index, num_false): # 这里的 graph应该是没有加自环的
+def load_link_prediction_task_fast(graph, t_index, num_false):
 
     pos_node_pairs = []
     neg_node_pairs = []
@@ -103,7 +95,7 @@ def load_link_prediction_task_fast(graph, t_index, num_false): # 这里的 graph
     return pos_node_pairs
 
 
-def load_link_prediction_task_singlelabel(graph, t_index, num_false): # 这里的 graph应该是没有加自环的
+def load_link_prediction_task_singlelabel(graph, t_index, num_false):
 
     pos_node_pairs = []
     neg_node_pairs = []
@@ -133,7 +125,7 @@ def load_link_prediction_task_singlelabel(graph, t_index, num_false): # 这里�
 
     return pos_node_pairs
 
-def load_link_prediction_task_posonly_fast(graph, t_index, num_false):  # 这里的 graph应该是没有加自环的
+def load_link_prediction_task_posonly_fast(graph, t_index, num_false): 
 
     pos_node_pairs = []
 
@@ -153,7 +145,7 @@ def load_link_prediction_task_posonly_fast(graph, t_index, num_false):  # 这里
     return pos_node_pairs
 
 
-def load_link_prediction_chosen_node(graph, t_index, num_false, chosen_node): # 这里的 graph应该是没有加自环的
+def load_link_prediction_chosen_node(graph, t_index, num_false, chosen_node): 
 
     pos_node_pairs = []
     neg_node_pairs = []
@@ -184,14 +176,8 @@ def load_link_prediction_chosen_node(graph, t_index, num_false, chosen_node): # 
     return pos_node_pairs
 
 
-def find_task_data_vocab_positive(graph, t_index, num_false): # 这里的 graph应该是没有加自环的
-    '''
-    只返回positive的节点，用于计算预测的probability和 cross entropy loss
-    :param graph: 所有时间片的graph 的 邻接矩阵
-    :param t_index: 指示是哪一个时间片
-    :param num_false: 负采样的样本个数
-    :return: 一个vocab vocab[node]=neighbor of node, including []
-    '''
+def find_task_data_vocab_positive(graph, t_index, num_false): 
+
     vocab = {}
 
     graph_t = graph[t_index, :, :]
@@ -208,14 +194,8 @@ def find_task_data_vocab_positive(graph, t_index, num_false): # 这里的 graph�
     return vocab
 
 
-def pos_task_data(graph, t_index): # 这里的 graph应该是没有加自环的
-    '''
-    只返回positive的节点，用于计算预测的probability和 cross entropy loss
-    :param graph: 所有时间片的graph 的 邻接矩阵
-    :param t_index: 指示是哪一个时间片
-    :param num_false: 负采样的样本个数
-    :return: 一个vocab vocab[node]=neighbor of node, including []
-    '''
+def pos_task_data(graph, t_index):
+
     vocab = {}
 
     graph_t = graph[t_index, :, :]
@@ -231,15 +211,8 @@ def pos_task_data(graph, t_index): # 这里的 graph应该是没有加自环的
 
     return vocab
 
-def find_task_data_vocab_allInstance(graph, t_index, num_false): # 这里的 graph应该是没有加自环的
-    '''
-    返回所有的节点作为备选节点。用于计算probability之后，排序，希望正样本排在前topk。
-    这样做的好处就是可以不用选行为分割的loss。但是要手动指定k
-    :param graph: 所有时间片的graph 的 邻接矩阵
-    :param t_index: 指示是哪一个时间片
-    :param num_false: 负采样的样本个数 只在train的时候用的到。
-    :return: 一个vocab vocab[node]=neighbor of node, including []
-    '''
+def find_task_data_vocab_allInstance(graph, t_index, num_false): 
+
     real_neighbor = {}
 
     graph_t = graph[t_index, :, :]
@@ -260,15 +233,8 @@ def find_task_data_vocab_allInstance(graph, t_index, num_false): # 这里的 gra
 
 
 
-def find_task_data_vocab_allInstance(graph, t_index, num_false): # 这里的 graph应该是没有加自环的
-    '''
-    返回所有的节点作为备选节点。用于计算probability之后，排序，希望正样本排在前topk。
-    这样做的好处就是可以不用选行为分割的loss。但是要手动指定k
-    :param graph: 所有时间片的graph 的 邻接矩阵
-    :param t_index: 指示是哪一个时间片
-    :param num_false: 负采样的样本个数 只在train的时候用的到。
-    :return: 一个vocab vocab[node]=neighbor of node, including []
-    '''
+def find_task_data_vocab_allInstance(graph, t_index, num_false): 
+
     real_neighbor = {}
 
     graph_t = graph[t_index, :, :]
@@ -289,11 +255,7 @@ def find_task_data_vocab_allInstance(graph, t_index, num_false): # 这里的 gra
 
 
 def get_smooth_loss(node_embedding):
-    '''
-    对一段时间、一部分node 的 node embedding
-    :param node_embedding: 【n_node, n_time, n_dimension】原始的embedding矩阵的一个slice
-    :return: 相邻时间片embedding的欧氏距离
-    '''
+
     n_time = node_embedding.shape[1]
     smoothing_loss = 0
     for time_index in range(n_time-1):
@@ -327,19 +289,12 @@ def get_attribute_loss(node_feature, attribute_task_data):
 
 
 def random_sampling(adj, node_embedding, cum_table, uptime):
-    '''
-    相比于ver2的改动是并不是返回所有的采样数据。只返回embedding相差不是那么大的采样数据
-    “相差不那么大” 这个阈值，怎么的出来，其实我也不知道……
-    :param adj:
-    :param uptime: 训练的时候采样的时间上限， 就是 training 数据集  的 大小
-    :return: (which node, from time, end_time, link prediction label)
-    :return: link prediction 的 task data 和 feature embedding 的 task data。
-    '''
+
     [n_time, n_node, n_node] = adj.shape
     sample_times = config.training_sample_time
     for k in range(sample_times):
-        start_time = np.random.randint(uptime-1) # 最大到 uptime-2
-        end_time = np.random.randint(start_time+1, uptime) #最大到uptime-1， 预测最大到 uptime
+        start_time = np.random.randint(uptime-1) 
+        end_time = np.random.randint(start_time+1, uptime) 
         chosen_node = np.random.randint(n_node, size = config.batch_size)
         valid_node = chose_valid(chosen_node, node_embedding,start_time, end_time)
         #link prediction training data -> link condition in end_time + 1
@@ -358,12 +313,7 @@ def random_sampling(adj, node_embedding, cum_table, uptime):
 
 
 def random_sampling_t_n_node(adj,uptime):
-    '''
-    相比于ver2的改动是并不是返回所有的采样数据。悉数返回，在training之前再选合格的数据
-    :param adj:
-    :return: (which node, from time, end_time, link prediction label)
-    :return: link prediction 的 task data 和 feature embedding 的 task data。
-    '''
+
     [n_time, n_node, n_node] = adj.shape
     sample_times = config.training_sample_time
     for k in range(sample_times):
@@ -389,14 +339,7 @@ def chose_valid(chosen_node, node_embedding, start_time, end_time,threshold):
     return valid_node
 
 def distance_statistic( node_embedding):
-    '''
-    相比于ver2的改动是并不是返回所有的采样数据。只返回embedding相差不是那么大的采样数据
-    “相差不那么大” 这个阈值，怎么的出来，其实我也不知道……
-    :param adj: [n_time, n_node, n_node]
-    :param node_embedding:  (num_node, num_time, att_dim)
-    :return: (which node, from time, end_time, link prediction label)
-    :return: link prediction 的 task data 和 feature embedding 的 task data。
-    '''
+
     all_dist = []
     (num_node, n_time, att_dim) = node_embedding.shape
     for t in range(n_time-1):
@@ -408,17 +351,13 @@ def distance_statistic( node_embedding):
     all_dist = np.array(all_dist)
     all_dist = all_dist.reshape((-1,1))
 
-    # median_distance = np.median(all_dist)
-    # mean_distance = np.mean(all_dist)
-    # min_distance = np.min(all_dist)
-    # max_distance = np.max(all_dist)
-    # return median_distance, mean_distance, min_distance, max_distance
+
 
     return all_dist
 
 
 
-def get_LP_train_data(graph, t_index, num_false, chosen_node, cum_table): # 这里的 graph应该是没有加自环的
+def get_LP_train_data(graph, t_index, num_false, chosen_node, cum_table): 
 
     pos_node_pairs = []
     neg_node_pairs = []
@@ -447,15 +386,8 @@ def get_LP_train_data(graph, t_index, num_false, chosen_node, cum_table): # 这�
     return pos_node_pairs
 
 
-def get_attribute_training_data(graph, t_index, num_false, chosen_node, cum_table): # 这里的 graph应该是没有加自环的
-    '''
-    对一个选中的点，返回有连边的点和没连边的点。方便最小化attribute loss
-    :param graph: adj
-    :param t_index: 时间idnex
-    :param num_false: 负样本的个数
-    :param chosen_node: 选中的点
-    :return:
-    '''
+def get_attribute_training_data(graph, t_index, num_false, chosen_node, cum_table): 
+
     pos_node_pairs = []
     neg_node_pairs = []
 
@@ -501,30 +433,6 @@ def make_cum_table(domain=2 ** 31 - 1,  index2freq = []):
 
     return cum_table
 
-
-
-
-
-
-from line_profiler import LineProfiler
-if __name__ == '__main__':
-    adjfile = './Data/arxiv/adjmap.npz'
-    adj = np.load(adjfile)
-    Graphs_ori = adj['adj_mat']
-    Graphs_ori = torch.tensor(Graphs_ori)
-
-    graph = Graphs_ori
-    t_index = 1
-    num_false = 2
-    chosen_node = [1,2]
-
-    lp = LineProfiler()
-    # lp_wrapper = lp(singlelabel_chosen_node)
-    lp_wrapper = lp(get_attribute_training_data)
-    #
-    lp_wrapper(graph, t_index, num_false, chosen_node)
-
-    lp.print_stats()
 
 
 

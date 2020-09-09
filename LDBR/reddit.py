@@ -206,10 +206,9 @@ def behavior_division_v1(model, Data):
                 prediction, label = model.link_prediction_training(behavior_embedding, task_data)
                 label = torch.unsqueeze(label, -1)
 
-                prediction = torch.sigmoid(prediction)  # 然后softmax 这样防止所有数据都在正半轴或者负半轴，最后结果更好。
+                prediction = torch.sigmoid(prediction)  
                 loss = F.binary_cross_entropy(prediction, label, reduce=False)
 
-                ## 用 loss 决定
                 mean_loss = torch.mean(loss).item()
                 if mean_loss >= 4:
                     print("node %d, after t_index %d" % (node, t_index))
@@ -386,4 +385,4 @@ def train_epoch(dynamic_model, Data, optimizer):
 if __name__ == '__main__':
     st = time()
     main()
-    print ('total_time is , ',time()-st)
+

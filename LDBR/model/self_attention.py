@@ -1,11 +1,5 @@
 #coding=utf-8
-'''
-时间片之间的self attention
-编辑时间，
-第——次，编辑时间
-1 2020.4.1.23.10
-2 2020.4.2.21.30
-'''
+
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -51,8 +45,6 @@ class MultiHeadedAttention(nn.Module): #
         query, key, value = \
             [l(x).view(nbatches, -1, self.h, self.d_k).transpose(1, 2)
              for l, x in zip(self.linears, (query, key, value))]
-        #上面这句话的意思是，query经过一个linear层， 然后结果被reshape成
-        # 你——batch， -1， h, d-k . 然后再transpose一下。
 
         # 2) Apply attention on all the projected vectors in batch.
         x, self.attn = attention(query, key, value, mask=mask,
@@ -63,10 +55,5 @@ class MultiHeadedAttention(nn.Module): #
             .view(nbatches, -1, self.h * self.d_k)
 
         return self.linears[-1](x)
-
-
-
-if __name__ == '__main__':
-    pass
 
 

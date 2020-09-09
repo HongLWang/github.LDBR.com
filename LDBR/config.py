@@ -22,7 +22,7 @@ parser.add_argument('--n_sample', type=int, default=4)
 
 
 #attention parameters
-parser.add_argument('--h', type=int, default=4) #  attention multi-head 个数
+parser.add_argument('--h', type=int, default=4) #  attention multi-head 
 parser.add_argument('--attention_dimension', type=int, default=64)  # feature dimension
 parser.add_argument('--rnn_h_dim', type=int, default=48)  # feature dimension
 

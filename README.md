@@ -1,5 +1,5 @@
 # github.LDBR.com
-Pytorch implementation of AAAI 2021 submission "Learning Dynamic Node Behavior Based on Event Representation"
+Pytorch implementation of WWW 2021 submission "Learning Dynamic Node Behavior Based on Event Representation"
 
 ## Requirement
 
@@ -8,8 +8,6 @@ python==3.7
 Torch==1.0.1
 
 scikit-learn==0.23.1
-
-
 
 ## Data
 
